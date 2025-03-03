@@ -11,8 +11,10 @@
 
 namespace FOS\ElasticaBundle;
 
+use Elastica\Query\AbstractQuery;
 use FOS\ElasticaBundle\Finder\FinderInterface;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
+use Pagerfanta\Pagerfanta;
 
 /**
  * @author Richard Miller <info@limethinking.co.uk>
@@ -64,21 +66,21 @@ class Repository
      *
      * @param mixed $query
      *
-     * @return \Pagerfanta\Pagerfanta<object>
+     * @return Pagerfanta<object>
      */
-    public function findPaginated($query, array $options = [])
+    public function findPaginated($query, array $options = []): Pagerfanta
     {
         return $this->finder->findPaginated($query, $options);
     }
 
     /**
+     * Find results using ElasticSearch's scroll API
      *
-     *
-     * @param $query
-     * @param $options
-     * @return mixed
+     * @param string|array|AbstractQuery $query
+     * @param array<string, mixed> $options
+     * @return Pagerfanta<object>
      */
-    public function findScrollPaginated($query, $options = [])
+    public function findScrollPaginated(string|array|AbstractQuery $query, array $options = []): Pagerfanta
     {
         return $this->finder->findScrollPaginated($query, $options);
     }
@@ -98,12 +100,14 @@ class Repository
 
 
     /**
-     * @param mixed $query
-     * @param array $options
+     * Paginator adapter using ElasticSearch's scroll API
+     *
+     * @param string|array|AbstractQuery $query ElasticSearch query
+     * @param array<string, mixed> $options Options for the query
      *
      * @return Paginator\PaginatorAdapterInterface
      */
-    public function createScrollPaginatorAdapter($query, $options = [])
+    public function createScrollPaginatorAdapter(string|array|AbstractQuery $query, array $options = []): Paginator\PaginatorAdapterInterface
     {
         return $this->finder->createScrollPaginatorAdapter($query, $options);
     }

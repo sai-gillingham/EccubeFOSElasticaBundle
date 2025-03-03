@@ -11,6 +11,8 @@
 
 namespace FOS\ElasticaBundle\Finder;
 
+use Elastica\Query;
+use Elastica\Query\AbstractQuery;
 use FOS\ElasticaBundle\HybridResult;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use Pagerfanta\Pagerfanta;
@@ -37,7 +39,7 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return Pagerfanta<object> paginated results
      */
-    public function findPaginated($query, array $options = []);
+    public function findPaginated(string|array|AbstractQuery $query, array $options = []): Pagerfanta;
 
     /**
      * Creates a paginator adapter for this query.
@@ -45,11 +47,11 @@ interface PaginatedFinderInterface extends FinderInterface
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
-     * @param mixed $query
-     *
+     * @param string|array|Query $query
+     * @param array<string, mixed> $options
      * @return PaginatorAdapterInterface
      */
-    public function createPaginatorAdapter($query, array $options = []);
+    public function createPaginatorAdapter(string|array|AbstractQuery $query, array $options = []): PaginatorAdapterInterface;
 
     /**
      * Creates a hybrid paginator adapter for this query.
@@ -61,7 +63,7 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return PaginatorAdapterInterface
      */
-    public function createHybridPaginatorAdapter($query, array $options = []);
+    public function createHybridPaginatorAdapter(string|array|AbstractQuery $query, array $options = []): PaginatorAdapterInterface;
 
     /**
      * Creates a raw paginator adapter for this query.
@@ -73,7 +75,7 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return PaginatorAdapterInterface
      */
-    public function createRawPaginatorAdapter($query, array $options = []);
+    public function createRawPaginatorAdapter(string|array|AbstractQuery $query, array $options = []): PaginatorAdapterInterface;
 
     /**
      * Creates a scroll paginator adapter for this query.
@@ -83,5 +85,5 @@ interface PaginatedFinderInterface extends FinderInterface
      *
      * @return PaginatorAdapterInterface return a paginator adapter
      */
-    public function createScrollPaginatorAdapter(mixed $query, array $options = []): PaginatorAdapterInterface;
+    public function createScrollPaginatorAdapter(string|array|AbstractQuery $query, array $options = []): PaginatorAdapterInterface;
 }

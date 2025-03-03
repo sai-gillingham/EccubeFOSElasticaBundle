@@ -8,12 +8,12 @@ use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
 
 class TransformedScrollPaginatorAdapter extends RawScrollPaginatorAdapter
 {
-    private $transformer;
+    private ElasticaToModelTransformerInterface $transformer;
 
     /**
      * @param SearchableInterface                 $searchable  the object to search in
      * @param Query                               $query       the query to search
-     * @param array                               $options
+     * @param array<string, mixed>                $options     search options
      * @param ElasticaToModelTransformerInterface $transformer the transformer for fetching the results
      */
     public function __construct(SearchableInterface $searchable, Query $query, array $options, ElasticaToModelTransformerInterface $transformer)
@@ -26,7 +26,7 @@ class TransformedScrollPaginatorAdapter extends RawScrollPaginatorAdapter
     /**
      * {@inheritdoc}
      */
-    public function getResults($offset, $length)
+    public function getResults($offset, $length): PartialResultsInterface|RawPartialResults
     {
         return new TransformedPartialResults($this->getElasticaResults($offset, $length), $this->transformer);
     }

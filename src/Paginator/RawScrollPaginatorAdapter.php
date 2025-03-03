@@ -3,7 +3,6 @@
 namespace FOS\ElasticaBundle\Paginator;
 
 use Elastica\Query;
-use Elastica\Response;
 use Elastica\ResultSet;
 use Elastica\SearchableInterface;
 use Elastica\Scroll;
@@ -14,42 +13,42 @@ class RawScrollPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * @var SearchableInterface the object to search in
      */
-    private $searchable;
+    private SearchableInterface $searchable;
 
     /**
-     * @var Scroll the scroll instance
+     * @var Scroll|null the scroll instance
      */
-    private $scroll;
+    private ?Scroll $scroll = null;
 
     /**
      * @var Query the query to search
      */
-    private $query;
+    private Query $query;
 
     /**
      * @var array search options
      */
-    private $options;
+    private array $options;
 
     /**
      * @var int the number of hits
      */
-    private $totalHits;
+    private int $totalHits;
 
     /**
      * @var array for the aggregations
      */
-    private $aggregations;
+    private array $aggregations;
 
     /**
      * @var array for the suggesters
      */
-    private $suggests;
+    private array $suggests;
 
     /**
      * @var float
      */
-    private $maxScore;
+    private float $maxScore;
 
     /**
      * @see PaginatorAdapterInterface::__construct
@@ -68,9 +67,9 @@ class RawScrollPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getResults($offset, $itemCountPerPage)
+    public function getResults($offset, $length): PartialResultsInterface|RawPartialResults
     {
-        return new RawPartialResults($this->getElasticaResults($offset, $itemCountPerPage));
+        return new RawPartialResults($this->getElasticaResults($offset, $length));
     }
 
     /**
@@ -87,7 +86,7 @@ class RawScrollPaginatorAdapter implements PaginatorAdapterInterface
             : $this->totalHits;
     }
 
-    public function getAggregations()
+    public function getAggregations(): array
     {
         if (!isset($this->aggregations)) {
             $this->aggregations = $this->searchable->search($this->query)->getAggregations();
@@ -99,7 +98,7 @@ class RawScrollPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getSuggests()
+    public function getSuggests(): array
     {
         if (!isset($this->suggests)) {
             $this->suggests = $this->searchable->search($this->query)->getSuggests();
@@ -111,7 +110,7 @@ class RawScrollPaginatorAdapter implements PaginatorAdapterInterface
     /**
      * @return float
      */
-    public function getMaxScore()
+    public function getMaxScore(): float
     {
         if (!isset($this->maxScore)) {
             $this->maxScore = $this->searchable->search($this->query)->getMaxScore();
@@ -125,7 +124,7 @@ class RawScrollPaginatorAdapter implements PaginatorAdapterInterface
      *
      * @return Query the search query
      */
-    public function getQuery()
+    public function getQuery(): Query
     {
         return $this->query;
     }
@@ -136,13 +135,12 @@ class RawScrollPaginatorAdapter implements PaginatorAdapterInterface
      * @param int $offset
      * @param int $itemCountPerPage
      *
-     * @throws \InvalidArgumentException
-     *
      * @return ResultSet
+     *@throws \InvalidArgumentException
+     *
      */
-    protected function getElasticaResults($offset, $itemCountPerPage)
+    protected function getElasticaResults(int $offset, int $itemCountPerPage): ResultSet
     {
-        $offset = (int) $offset;
         $itemCountPerPage = (int) $itemCountPerPage;
         $size = $this->query->hasParam('size')
             ? (int) $this->query->getParam('size')
@@ -168,10 +166,6 @@ class RawScrollPaginatorAdapter implements PaginatorAdapterInterface
         }
 
         $resultSet = $this->scroll->current();
-
-        if ($resultSet === null) {
-            return new ResultSet(new Response([]), $this->query, []);
-        }
 
         $this->totalHits = $resultSet->getTotalHits();
         $this->aggregations = $resultSet->getAggregations();
