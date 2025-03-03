@@ -72,6 +72,18 @@ class Repository
     }
 
     /**
+     *
+     *
+     * @param $query
+     * @param $options
+     * @return mixed
+     */
+    public function findScrollPaginated($query, $options = [])
+    {
+        return $this->finder->findScrollPaginated($query, $options);
+    }
+
+    /**
      * @phpstan-param TQuery $query
      * @phpstan-param TOptions $options
      *
@@ -82,6 +94,18 @@ class Repository
     public function createPaginatorAdapter($query, array $options = [])
     {
         return $this->finder->createPaginatorAdapter($query, $options);
+    }
+
+
+    /**
+     * @param mixed $query
+     * @param array $options
+     *
+     * @return Paginator\PaginatorAdapterInterface
+     */
+    public function createScrollPaginatorAdapter($query, $options = [])
+    {
+        return $this->finder->createScrollPaginatorAdapter($query, $options);
     }
 
     /**

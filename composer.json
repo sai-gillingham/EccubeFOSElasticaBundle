@@ -1,6 +1,6 @@
 {
-    "name": "friendsofsymfony/elastica-bundle",
-    "description": "Elasticsearch PHP integration for your Symfony project using Elastica",
+    "name": "sai-gillingham/eccube-fos-elastica-bundle",
+    "description": "Elasticsearch PHP integration for your Symfony project using Elastica (Modified for EC-CUBE).",
     "license": "MIT",
     "type": "symfony-bundle",
     "keywords": [
@@ -8,7 +8,8 @@
         "elastica",
         "elasticsearch",
         "mongodb",
-        "search"
+        "search",
+        "eccube"
     ],
     "authors": [
         {
@@ -26,6 +27,10 @@
         {
             "name": "Jeremy Mikola",
             "email": "jmikola@gmail.com"
+        },
+        {
+            "name": "Piers Gillingham",
+            "email": "gillingham@sai-net.jp"
         }
     ],
     "homepage": "https://github.com/FriendsOfSymfony/FOSElasticaBundle",
@@ -64,7 +69,6 @@
         "symfony/yaml": "^5.4 || ^6.4 || ^7.1"
     },
     "suggest": {
-        "enqueue/elastica-bundle": "For populating Elasticsearch indexes asynchronously and using significanly less resources. Uses Enqueue.",
         "symfony/messenger": "For populating Elasticsearch indexes asynchronously and using significanly less resources."
     },
     "prefer-stable": true,

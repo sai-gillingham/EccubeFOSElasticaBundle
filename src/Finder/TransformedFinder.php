@@ -16,6 +16,8 @@ use Elastica\Result;
 use Elastica\SearchableInterface;
 use FOS\ElasticaBundle\Paginator\FantaPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\HybridPaginatorAdapter;
+use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
+use FOS\ElasticaBundle\Paginator\TransformedScrollPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\RawPaginatorAdapter;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use FOS\ElasticaBundle\Transformer\ElasticaToModelTransformerInterface;
@@ -78,6 +80,17 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function findScrollPaginated($query, $options = [])
+    {
+        $query = Query::create($query);
+        $paginatorAdapter = $this->createScrollPaginatorAdapter($query, $options);
+
+        return new Pagerfanta(new FantaPaginatorAdapter($paginatorAdapter));
+    }
+
     public function createPaginatorAdapter($query, array $options = [])
     {
         $query = Query::create($query);
@@ -97,6 +110,16 @@ class TransformedFinder implements PaginatedFinderInterface, PaginatedRawFinderI
         $query = Query::create($query);
 
         return new RawPaginatorAdapter($this->searchable, $query, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createScrollPaginatorAdapter(mixed $query, array $options = []) : PaginatorAdapterInterface
+    {
+        $query = Query::create($query);
+
+        return new TransformedScrollPaginatorAdapter($this->searchable, $query, $options, $this->transformer);
     }
 
     /**
